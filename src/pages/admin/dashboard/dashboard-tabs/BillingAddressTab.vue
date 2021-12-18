@@ -55,28 +55,28 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import countriesListData from '@/data/CountriesList'
 import { getLineMapData } from '@/data/maps/LineMapData'
 import { useGlobalConfig } from 'vuestic-ui';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 
 export default {
   name: 'billing-address-tab',
   setup() {
-    const form = {
-      name: 'John Smith',
-      email: 'smith@gmail.com',
-      address: '93  Guild Street',
-      city: { text: 'London' },
-      country: 'United Kingdom',
-      connection: true,
-    }
-    const {city, country} = toRefs(form)
-    const allowedCountriesList = ref([])
-    const allowedCitiesList= ref([])
 
-    const theme = computed(()=> {
+    const form = ref({
+        name: '',
+        email: 'smith@gmail.com',
+        address: '93  Guild Street',
+        city: { text: 'London' },
+        country: 'United Kingdom',
+        connection: true,
+    })
+
+    const allowedCitiesList = ref([])
+
+    const theme = computed(() => {
       return useGlobalConfig().getGlobalConfig().colors
     })
 
@@ -92,22 +92,24 @@ export default {
       return {
         color: theme.value.dark,
       }
-    })        
-
-    watch(country, (value) => {
-      allowedCitiesList.value = value ? citiesList.value.filter(({ country }) => country === value) : [...citiesList.value]
     })
 
-    watch(city, () => {
-      country.value = countriesListData.find(item => item === country.value)
+    watch(() => form.value.country, (value) => {
+      allowedCitiesList.value = value? citiesList.value.filter(({ country }) => country === value)
+        : [...citiesList.value]
+    })
+
+    watch(() => form.value.city, ({country}) => {
+      form.value.country = countriesList.value.find(item => item === country)
+    })
+
+    onMounted(()=> {
+      allowedCitiesList.value = [...citiesList.value]
     })
 
     return {
       form,
-      allowedCountriesList,
-      allowedCitiesList,
-      countriesList,
-      computedStylesTitle
+      theme, citiesList, allowedCitiesList, countriesList, computedStylesTitle
     }
   },
   emits: ['submit'],
@@ -116,9 +118,7 @@ export default {
       this.$emit('submit', this.form)
     },
   },
-  mounted () {
-    this.allowedCitiesList = [...this.citiesList]
-  },
+
 }
 </script>
 

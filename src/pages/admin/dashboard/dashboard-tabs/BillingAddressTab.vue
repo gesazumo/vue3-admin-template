@@ -61,21 +61,7 @@ import { getLineMapData } from '@/data/maps/LineMapData'
 import { useGlobalConfig } from 'vuestic-ui';
 import { computed, ref, onMounted, watch } from 'vue';
 
-export default {
-  name: 'billing-address-tab',
-  setup() {
-
-    const form = ref({
-        name: '',
-        email: 'smith@gmail.com',
-        address: '93  Guild Street',
-        city: { text: 'London' },
-        country: 'United Kingdom',
-        connection: true,
-    })
-
-    const allowedCitiesList = ref([])
-
+const useComputed = () => {
     const theme = computed(() => {
       return useGlobalConfig().getGlobalConfig().colors
     })
@@ -94,31 +80,58 @@ export default {
       }
     })
 
-    watch(() => form.value.country, (value) => {
-      allowedCitiesList.value = value? citiesList.value.filter(({ country }) => country === value)
-        : [...citiesList.value]
+    return {
+      theme, citiesList, countriesList, computedStylesTitle
+    }
+}
+
+const useWatch = (form, citiesList, countriesList) => {
+
+  const allowedCitiesList = ref([])
+
+  watch(() => form.value.country, (value) => {
+    allowedCitiesList.value = value? citiesList.value.filter(({ country }) => country === value)
+      : [...citiesList.value]
+  })
+
+  watch(() => form.value.city, ({country}) => {
+    form.value.country = countriesList.value.find(item => item === country)
+  })
+
+  return {
+    allowedCitiesList
+  }
+}
+
+export default {
+  name: 'billing-address-tab',
+  setup(props, { emit }) {
+
+    const form = ref({
+        name: '',
+        email: 'smith@gmail.com',
+        address: '93  Guild Street',
+        city: { text: 'London' },
+        country: 'United Kingdom',
+        connection: true,
     })
 
-    watch(() => form.value.city, ({country}) => {
-      form.value.country = countriesList.value.find(item => item === country)
-    })
+    const {theme, citiesList, countriesList, computedStylesTitle} = useComputed()
+    const {allowedCitiesList} = useWatch(form, citiesList, countriesList)
 
     onMounted(()=> {
       allowedCitiesList.value = [...citiesList.value]
     })
 
+    const submit = () => {
+      emit('submit', form.value)
+    }
+
     return {
-      form,
+      form, submit,
       theme, citiesList, allowedCitiesList, countriesList, computedStylesTitle
     }
   },
-  emits: ['submit'],
-  methods: {
-    submit () {
-      this.$emit('submit', this.form)
-    },
-  },
-
 }
 </script>
 

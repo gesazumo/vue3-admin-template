@@ -55,11 +55,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import countriesListData from '@/data/CountriesList'
 import { getLineMapData } from '@/data/maps/LineMapData'
 import { useGlobalConfig } from 'vuestic-ui';
 import { computed, ref, onMounted, watch } from 'vue';
+import {BillingAddressFormType} from '@/interface'
 
 const useComputed = () => {
     const theme = computed(() => {
@@ -105,8 +106,13 @@ const useWatch = (form, citiesList, countriesList) => {
 
 export default {
   name: 'billing-address-tab',
+  emits: {
+  submit: (data: BillingAddressFormType) => {
+      console.log('billing-address-tab submit check')
+      return data
+    }
+  },
   setup(props, { emit }) {
-
     const form = ref({
         name: '',
         email: 'smith@gmail.com',
@@ -124,6 +130,7 @@ export default {
     })
 
     const submit = () => {
+      console.log("billing-address-tab submit start")
       emit('submit', form.value)
     }
 

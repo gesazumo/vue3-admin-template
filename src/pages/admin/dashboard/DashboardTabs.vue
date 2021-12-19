@@ -23,32 +23,37 @@
   </va-card>
 </template>
 
-<script>
-import OverviewTab from './dashboard-tabs/OverviewTab'
-import BillingAddressTab from './dashboard-tabs/BillingAddressTab'
-import BankDetailsTab from './dashboard-tabs/BankDetailsTab'
+<script lang="ts">
+import OverviewTab from './dashboard-tabs/OverviewTab.vue'
+import BillingAddressTab from './dashboard-tabs/BillingAddressTab.vue'
+import BankDetailsTab from './dashboard-tabs/BankDetailsTab.vue'
+import { ref } from 'vue';
+import {BillingAddressFormType} from '@/interface'
 
 export default {
   name: 'DashboardTabs',
+  emits: {
+    submit: (data: BillingAddressFormType) => {
+      console.log('DashboardTabs submit check')
+      return data
+    }
+  },
   components: {
     OverviewTab,
     BillingAddressTab,
     BankDetailsTab,
   },
-  data () {
-    return {
-      activeTabName: 'BillingAddressTab',
-      tabs: [
-        'OverviewTab',
-        'BillingAddressTab',
-        'BankDetailsTab',
-      ],
+  setup(props, {emit}) {
+    const activeTabName = ref('BillingAddressTab')
+
+    const submit = (data: BillingAddressFormType) => {
+      console.log('DashboardTabs submit start')
+      emit('submit', data)
     }
-  },
-  methods: {
-    submit (data) {
-      this.$emit('submit', data)
-    },
+
+    return {
+      activeTabName, submit
+    }
   },
 }
 </script>

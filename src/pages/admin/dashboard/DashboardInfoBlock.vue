@@ -101,14 +101,36 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { ref } from 'vue'
 import { useGlobalConfig } from 'vuestic-ui'
+
+const useModal = () => {
+  const modal = ref(false)
+  const showModal = () => {
+    modal.value = true
+  }
+  return {modal, showModal}
+}
+
+const useTransImage = (images: string[]) => {
+
+  const currentImageIndex = ref(0)
+
+  const showPrevImage = () => {
+    currentImageIndex.value = !currentImageIndex.value ? images.length - 1 : currentImageIndex.value - 1
+  }
+      
+  const showNextImage = () => {
+    currentImageIndex.value = currentImageIndex.value === images.length - 1 ? 0 : currentImageIndex.value + 1
+  }  
+  return {currentImageIndex, showPrevImage, showNextImage}
+}
 
 export default {
   name: 'DashboardInfoBlock',
-  data () {
-    return {
-      infoTiles: [{
+  setup() {
+    const infoTiles = [{
         color: 'success',
         value: '803',
         text: 'commits',
@@ -123,29 +145,19 @@ export default {
         value: '5',
         text: 'teamMembers',
         icon: '',
-      }],
-      modal: false,
-      currentImageIndex: 0,
-      images: [
+      }]
+
+    const images = [
         'https://i.imgur.com/qSykGko.jpg',
         'https://i.imgur.com/jYwT08D.png',
         'https://i.imgur.com/9930myH.jpg',
         'https://i.imgur.com/2JxhWD6.jpg',
         'https://i.imgur.com/MpiOWbM.jpg',
-      ],
-    }
+      ]
+
+    return {images, infoTiles, ...useModal(), ...useTransImage(images)}
   },
-  methods: {
-    showModal () {
-      this.modal = true
-    },
-    showPrevImage () {
-      this.currentImageIndex = !this.currentImageIndex ? this.images.length - 1 : this.currentImageIndex - 1
-    },
-    showNextImage () {
-      this.currentImageIndex = this.currentImageIndex === this.images.length - 1 ? 0 : this.currentImageIndex + 1
-    },
-  },
+
   computed: {
     theme() {
       return useGlobalConfig().getGlobalConfig().colors || {}

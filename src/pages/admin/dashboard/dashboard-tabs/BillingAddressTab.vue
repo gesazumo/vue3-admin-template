@@ -58,14 +58,12 @@
 <script lang="ts">
 import countriesListData from '@/data/CountriesList'
 import { getLineMapData } from '@/data/maps/LineMapData'
-import { useGlobalConfig } from 'vuestic-ui';
 import { computed, ref, onMounted, watch } from 'vue';
 import {BillingAddressFormType} from '@/interface'
+import { useTheme } from '@/composable/useTheme';
 
 const useComputed = () => {
-    const theme = computed(() => {
-      return useGlobalConfig().getGlobalConfig().colors
-    })
+    const {theme} = useTheme()
 
     const citiesList = computed(()=> {
       return getLineMapData(theme.value).cities.map(({ title, country }) => ({ text: title, country }))

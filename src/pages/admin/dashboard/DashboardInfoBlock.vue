@@ -131,29 +131,29 @@ export default {
   name: 'DashboardInfoBlock',
   setup() {
     const infoTiles = [{
-        color: 'success',
-        value: '803',
-        text: 'commits',
-        icon: '',
-      }, {
-        color: 'danger',
-        value: '57',
-        text: 'components',
-        icon: '',
-      }, {
-        color: 'info',
-        value: '5',
-        text: 'teamMembers',
-        icon: '',
-      }]
+      color: 'success',
+      value: '803',
+      text: 'commits',
+      icon: '',
+    }, {
+      color: 'danger',
+      value: '57',
+      text: 'components',
+      icon: '',
+    }, {
+      color: 'info',
+      value: '5',
+      text: 'teamMembers',
+      icon: '',
+    }]
 
     const images = [
-        'https://i.imgur.com/qSykGko.jpg',
-        'https://i.imgur.com/jYwT08D.png',
-        'https://i.imgur.com/9930myH.jpg',
-        'https://i.imgur.com/2JxhWD6.jpg',
-        'https://i.imgur.com/MpiOWbM.jpg',
-      ]
+      'https://i.imgur.com/qSykGko.jpg',
+      'https://i.imgur.com/jYwT08D.png',
+      'https://i.imgur.com/9930myH.jpg',
+      'https://i.imgur.com/2JxhWD6.jpg',
+      'https://i.imgur.com/MpiOWbM.jpg',
+    ]
 
     return {images, infoTiles, ...useModal(), ...useTransImage(images)}
   },
